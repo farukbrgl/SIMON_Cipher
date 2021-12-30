@@ -76,8 +76,8 @@ else:
 import random
 # plainText_1 = numpy.array([random.randint(0, 15) for i in range(n)])
 # plainText_2 = numpy.array([random.randint(0, 15) for i in range(n)])
-plainText_1 = 0x6565
-plainText_2 = 0x6877
+plainText_1 = 0x6565 #most significant
+plainText_2 = 0x6877 #least significant
 
 # print (plainText_1, plainText_2)
 print (format(plainText_1, '04x'), format(plainText_2, "04X"))
@@ -89,10 +89,10 @@ print (format(plainText_1, '04x'), format(plainText_2, "04X"))
 # key_1 = [random.randint(1, 10) for i in range(n)]
 # key_2 = [random.randint(1, 10) for i in range(n)]
 # key_3 = [random.randint(1, 10) for i in range(n)]
-key_0 = 0x1918
-key_1 = 0x1110
-key_2 = 0x0908
-key_3 = 0x0100
+key_3 = 0x1918 #most significant
+key_2 = 0x1110
+key_1 = 0x0908
+key_0 = 0x0100 #least significant
 #key = [[random.randint(1, 10)] for i in range(255) for j in range(255)]
 print(key_0, key_1, key_2, key_3)
 print (format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
@@ -148,11 +148,11 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
         print(key_0, key_1, key_2)
         return key_0, key_1, key_2
     elif (m == 4):
+        #key_0_list.append(key_0)
         for i in range(0, T-1):
-            key_0_list.append(key_0)
-            temp1 = numpy.roll(key_3, -3)
+            temp1 = key_3 << 3
             temp2 = key_1 ^ temp1
-            temp3 = numpy.roll(temp2, -1)
+            temp3 = temp2 << 1
             temp4 = key_0 ^ temp2
             temp5 = temp3 ^ temp4
             if (n == 16):
@@ -161,12 +161,14 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
                 temp6 = temp5 ^ c ^ z_2[i]
             elif (n == 32):
                 temp6 = temp5 ^ c ^ z_3[i]
+            key_next = key_0
             key_0 = key_1
             key_1 = key_2
             key_2 = key_3
             key_3 = temp6
-            print("key{} = {}\nkey{} = {}\nkey{} = {}\nkey{} = {}\n".format(i, key_0, i+1, key_1, i+2, key_2, i+3, key_3))
-        key_0_list.append(key_0)
+            key_0_list.append(key_next)
+            print("key{} = {}".format(i, key_0))
+        #key_0_list.append(key_0)
 
         return key_0, key_1, key_2, key_3
 
@@ -178,8 +180,9 @@ def enc(plainText_1, plainText_2, key_0, T):
     t2 = plainText_2
     for i in range (T-1):
         tmp = t2
-        t2 = t1 ^ (numpy.roll(t2, 1) & numpy.roll(t2, 8)) ^ (numpy.roll(t2, 2)) ^ key_0_list[i]
-        t1 = tmp
+        t2 = t1 ^ ((t2 >> 1) & (t2 >> 8)) ^ ((t2 >> 2)) ^ key_0_list[i]
+        print(key_0_list)
+        t1 = tmp 
         # print(plainText_1, p16lainText_2)
         # print(key_0)
     print(t1,t2)
