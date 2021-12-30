@@ -97,7 +97,7 @@ key_0 = 0x0100 #least significant
 print(key_0, key_1, key_2, key_3)
 print (format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
 #print (key)
-
+c = 2**(2*n) - 1
 
 
 
@@ -148,11 +148,13 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
         print(key_0, key_1, key_2)
         return key_0, key_1, key_2
     elif (m == 4):
-        #key_0_list.append(key_0)
-        for i in range(0, T-1):
-            temp1 = key_3 << 3
+        print(key_0)
+        key_0_list.append(key_0)
+        for i in range(0, T):
+            print("key{} = {}".format(i, key_0))
+            temp1 = (key_3 >> 3)|(key_3 << (n - 3)) & c
             temp2 = key_1 ^ temp1
-            temp3 = temp2 << 1
+            temp3 = (temp2 >> 1)|(temp2 << (n - 1)) & c
             temp4 = key_0 ^ temp2
             temp5 = temp3 ^ temp4
             if (n == 16):
@@ -167,10 +169,9 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
             key_2 = key_3
             key_3 = temp6
             key_0_list.append(key_next)
-            print("key{} = {}".format(i, key_0))
         #key_0_list.append(key_0)
 
-        return key_0, key_1, key_2, key_3
+        return key_0_list
 
 
 
@@ -180,8 +181,9 @@ def enc(plainText_1, plainText_2, key_0, T):
     t2 = plainText_2
     for i in range (T-1):
         tmp = t2
-        t2 = t1 ^ ((t2 >> 1) & (t2 >> 8)) ^ ((t2 >> 2)) ^ key_0_list[i]
-        print(key_0_list)
+        (n << d)|(n >> (INT_BITS - d))
+        t2 = t1 ^ ((t2 >> 1) & (t2 >> 8)) ^ ((t2 >> 2)) ^ key_0[i]
+        #print(key_0)
         t1 = tmp 
         # print(plainText_1, p16lainText_2)
         # print(key_0)
@@ -192,7 +194,7 @@ def enc(plainText_1, plainText_2, key_0, T):
 
 
 c=0
-c = 2**n - 1
+
 print(c)
 # z_0
 # key_generation(key_0, key_1, key_2, key_3, m)
@@ -202,8 +204,8 @@ print(c)
 
 
 # for i in range(0, T-1):
-key_0, key_1, key_2, key_3 =key_generation(key_0, key_1, key_2, key_3, m, T)
-a,b= enc(plainText_1, plainText_2, key_0, T)
+key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
+a,b= enc(plainText_1, plainText_2, key_list, T)
 # print(type(key_0))
 # print(type(key_1))
 # print(type(key_2))
