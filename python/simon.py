@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
 
 # def SIMON(n,m, plainText, key):
 #     return cipherText
 
 
-# In[34]:
 
 
 import numpy
@@ -73,7 +70,6 @@ else:
     print("yanlış değer girdiniz\ndevam etmeyiniz")
 
 
-# In[35]:
 
 
 #plaintext ve key oluşturuldu
@@ -87,7 +83,6 @@ plainText_2 = 0x6877
 print (format(plainText_1, '04x'), format(plainText_2, "04X"))
 
 
-# In[36]:
 
 
 # key_0 = [random.randint(1, 10) for i in range(n)]
@@ -104,7 +99,6 @@ print (format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(
 #print (key)
 
 
-# In[46]:
 
 
 import numpy
@@ -177,7 +171,6 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
         return key_0, key_1, key_2, key_3
 
 
-# In[51]:
 
 
 def enc(plainText_1, plainText_2, key_0, T):
@@ -193,7 +186,6 @@ def enc(plainText_1, plainText_2, key_0, T):
     return t1, t2
 
 
-# In[52]:
 
 
 c=0
@@ -204,7 +196,6 @@ print(c)
 # enc(plainText_1, plainText_2, key_0)
 
 
-# In[55]:
 
 
 # for i in range(0, T-1):
@@ -220,18 +211,6 @@ a,b= enc(plainText_1, plainText_2, key_0, T)
 print (format(a, '04x'), format(b, "04X"))
 
 
-# In[57]:
 
 
 # print (format(plainText_1, '04x'), format(plainText_2, "04X"))
-
-
-# In[ ]:
-
-
-
-# In[ ]:
-
-
-
-
