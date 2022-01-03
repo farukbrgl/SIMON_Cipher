@@ -40,7 +40,7 @@ print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
 n = int(input("n değerini giriniz:"))
 m = int(input("m değerini giriniz:"))
 c = 0
-c = 2**(n) - 4
+c = 2**(n) - 1
 
 
 T = 0
@@ -112,8 +112,9 @@ numpy.set_printoptions(formatter={'int':hex})
 z değerlerinin fonksiyonu henüz düzgün değildir.
 """
 print(type(z_0))
-z_rev=z_0
-z_rev.reverse()
+# z_rev=z_0
+# z_rev.reverse()
+# print(z_rev)
 key_0_list= []
 def key_generation(key_0, key_1, key_2, key_3, m, T):
     key_0_n = key_0
@@ -148,19 +149,35 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
         print(key_0_n, key_1, key_2)
         return key_0_n, key_1, key_2
     elif (m == 4):
-        print(key_0_n)
-        print ("key_0_n in hex",format(key_0_n, '04x'))
+        print (key_0_n)
+        print ("key_0_n in hex",format(key_0_n, '016b'))
         key_0_list.append(key_0_n)
-        for i in range(m, T):
-            print("key{} = {}".format(i, key_0_n))
-            print ("key_0_n in hex",format(key_0_n, '04x'))
+        for i in range(T):
+            print ("key{} = {}".format(i, key_0_n))
+            print ("key_0_n in hex",format(key_0_n, '016b'))
             temp1 = (key_3 >> 3)|(key_3 << (n - 3)) & c
             temp2 = key_1 ^ temp1
             temp3 = (temp2 >> 1)|(temp2 << (n - 1)) & c
-            temp4 = key_0_n ^ temp2
-            temp5 = temp3 ^ temp4
+            # temp4 = key_0_n ^ temp2
+            # temp5 = temp3 ^ temp4
             if (n == 16):
-                temp6 = temp5 ^ c ^ z_rev[i]
+                # temp6 = temp5 ^ c ^ z_rev[i]
+                # c_z = c ^ 3 ^ ((z_0[i] >> ((i+m) % 62)) & 1)
+                # c_z = c ^ 3
+                # c_z = z_0[i]
+                # c_z = (z_0[i] >> ((i) % 62)) 
+                # c_z = ((z_0[i] >> ((i) % 62)) & 1)
+                print(z_0[i % 62])
+                print(i)
+                print(z_0)
+                c_z = c ^ 3 ^ ((z_0[i % 62]))
+                # c_z = c ^ 3 ^ 1
+                print ("z{} = {}".format(i, z_0[i]))
+                # temp6 = temp2 ^ key_0_n ^ temp3 ^ c_z
+                # temp6 = c_z
+                # temp6 = temp3 ^ c_z
+                # temp6 = temp2 ^ temp3 ^ c_z
+                temp6 = temp2 ^ key_0_n ^ temp3 ^ c_z
             elif (n == 32):
                 temp6 = temp5 ^ c ^ z_2[i]
             elif (n == 32):
