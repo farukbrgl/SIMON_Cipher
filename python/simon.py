@@ -151,7 +151,7 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
     elif (m == 4):
         print (key_0_n)
         print ("key_0_n in hex",format(key_0_n, '016b'))
-        key_0_list.append(key_0_n)
+        # key_0_list.append(key_0_n)
         for i in range(T):
             print ("key{} = {}".format(i, key_0_n))
             print ("key_0_n in hex",format(key_0_n, '016b'))
@@ -192,22 +192,44 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
 
         return key_0_list
 
+key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
 
 
-
-def enc(plainText_1, plainText_2, key_0, T):
-    t1 = plainText_1
+text1_list= []
+text2_list= []
+# def enc(plainText_1, plainText_2, key_0, T):
+for k in key_0_list:
+    #plaintext = t1[0:3]t2[0:3]
+    t1 = plainText_1  
     t2 = plainText_2
-    for i in range (T-1):
-        tmp = t2
-        #(n << d)|(n >> (INT_BITS - d))
-        t2 = t1 ^ ((t2 >> 1) & (t2 >> 8)) ^ ((t2 >> 2)) ^ key_0[i]
-        #print(key_0)
-        t1 = tmp 
-        # print(plainText_1, p16lainText_2)
-        # print(key_0)
-    print(t1,t2)
-    return t1, t2
+    print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    # tmp = t2
+    #(n << d)|(n >> (INT_BITS - d))
+    # print(key_0_list[i])
+    # t2 = t1 ^ (((t2 << 1) | (t2 >> (n - 1))) & ((t2 << 8) | (t2 >> (n - 8)))) ^ (((t2 << 2) | (t2 >> (n - 2)))) ^ key_0_list[i]
+    crol_1 = (t1 << 1) + (t1 >> (n-1)) & c
+    crol_2 = (t1 << 2) + (t1 >> (n-2)) & c
+    crol_8 = (t1 << 8) + (t1 >> (n-8)) & c
+    tmp1 = crol_1 & crol_8
+    tmp2 = t2 ^ tmp1
+    tmp3 = tmp2 ^ crol_2
+    tmp4 = tmp3 ^ k
+    t2 = t1
+    t1 = tmp4
+
+    #print(key_0)
+    # t1 = tmp
+    text1_list.append(t1)
+    text2_list.append(t2) 
+    print(t1, t2)
+    print ("texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    print(text1_list)
+    print(text2_list)
+    # print("key {} = {}".format(key_0_list.index(),k))
+    plainText_1 = t1
+    plainText_2 = t2
+# print(t1,t2)
+    # return text1_list, text2_list
 
 
 
@@ -223,8 +245,7 @@ print(c)
 
 
 # for i in range(0, T-1):
-key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
-a,b= enc(plainText_1, plainText_2, key_list, T)
+# a,b= enc(plainText_1, plainText_2, key_list, T)
 # print(type(key_0))
 # print(type(key_1))
 # print(type(key_2))
@@ -232,7 +253,7 @@ a,b= enc(plainText_1, plainText_2, key_list, T)
 # print(type(m))
 # print(type(plainText_1))
 # print(type(plainText_2))
-print (format(a, '04x'), format(b, "04X"))
+# print (format(a, '04x'), format(b, "04X"))
 
 
 
