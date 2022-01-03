@@ -1,103 +1,96 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+"""
+SIMON Hafif Blok Şifreleyicisinin Python ile Gerçeklenmesi
+Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
+"""
 
-# def SIMON(n,m, plainText, key):
-#     return cipherText
+"""
+plaintext ve key oluşturuldu
+bunlar orijinal makaledeki n=16, m=4 durumunda verilen başlangıç vektörleri
+sonuçların doğruluğunu makaleden inceleyebilirsiniz
+farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
+"""
+plainText_1 = 0x6565 #most significant
+plainText_2 = 0x6877 #least significant
+print ("plaintexts in decimal",plainText_1, plainText_2)
+print ("plaintexts in hex",format(plainText_1, '04x'), format(plainText_2, "04X"))
 
+key_3 = 0x1918 #most significant
+key_2 = 0x1110
+key_1 = 0x0908
+key_0 = 0x0100 #least significant
+print ("keys 0123 in decimal",key_0, key_1, key_2, key_3)
+print ("keys 0123 in hex",format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
 
-
-
-import numpy
-numpy.set_printoptions(formatter={'int':hex})
-
-
-###### n ve m değeri girildi
-#bu değerlere göre T ve j oluşturuldu
-
-print("n=16, 24, 32, 48, 64 olabilir\nm 2, 3, 4 olabilir")
-n = int(input("n değerini giriniz:"))
-m = int(input("m değerini giriniz:"))
+#z sabitleri oluşturuluyor
 z_0 = [1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0]
 z_1 = [1,0,0,0,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,1,0,1,0,0,0,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,1,0]
 z_2 = [1,0,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,1,1,0,1,0,0,1,0,0,1,1,0,0,0,1,0,1,0,0,0,0,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,0,1,1,0,0,1,1]
 z_3 = [1,1,0,1,1,0,1,1,1,0,1,0,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,1,1,1,0,0,1,1,0,1,0,0,0,0,1,1,1,1]
 z_4 = [1,1,0,1,0,0,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,1,1,0,0,1,0,1,0,0,1,0,0,1,1,1,0,1,1,1,1]
 
+
+"""
+n ve m değerleri kullanıcıdan isteniyor
+bu değerlere göre T ve j oluşturuluyor
+"""
+print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
+n = int(input("n değerini giriniz:"))
+m = int(input("m değerini giriniz:"))
+c = 0
+c = 2**(n) - 4
+
+
 T = 0
 j = 0
 if (n == 16 and m == 4):
     T = 32
     j = 0
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 24 and m == 3):
     T = 36
     j = 0
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 24 and m == 4):
     T = 36
     j = 1
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 32 and m == 3):
     T = 42
     j = 2
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 32 and m == 4):
     T = 44
     j = 3
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 48 and m == 2):
     T = 52
     j = 2
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 48 and m == 3):
     T = 54
     j = 3
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 64 and m == 2):
     T = 68
     j = 2
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 24 and m == 3):
     T = 69
     j = 3
-    print(T,j)
+    print("T,j:",T,j)
 elif (n == 64 and m == 4):
     T = 72
     j = 4
-    print(T,j)
+    print("T,j:",T,j)
 else:
     print("yanlış değer girdiniz\ndevam etmeyiniz")
 
 
 
 
-#plaintext ve key oluşturuldu
-import random
-# plainText_1 = numpy.array([random.randint(0, 15) for i in range(n)])
-# plainText_2 = numpy.array([random.randint(0, 15) for i in range(n)])
-plainText_1 = 0x6565 #most significant
-plainText_2 = 0x6877 #least significant
-
-# print (plainText_1, plainText_2)
-print (format(plainText_1, '04x'), format(plainText_2, "04X"))
-
-
-
-
-# key_0 = [random.randint(1, 10) for i in range(n)]
-# key_1 = [random.randint(1, 10) for i in range(n)]
-# key_2 = [random.randint(1, 10) for i in range(n)]
-# key_3 = [random.randint(1, 10) for i in range(n)]
-key_3 = 0x1918 #most significant
-key_2 = 0x1110
-key_1 = 0x0908
-key_0 = 0x0100 #least significant
-#key = [[random.randint(1, 10)] for i in range(255) for j in range(255)]
-print(key_0, key_1, key_2, key_3)
-print (format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
-#print (key)
-c = 2**(2*n) - 1
 
 
 
@@ -118,23 +111,30 @@ numpy.set_printoptions(formatter={'int':hex})
 """
 z değerlerinin fonksiyonu henüz düzgün değildir.
 """
+print(type(z_0))
+z_rev=z_0
+z_rev.reverse()
 key_0_list= []
 def key_generation(key_0, key_1, key_2, key_3, m, T):
+    key_0_n = key_0
+    key_1_n = key_1
+    key_2_n = key_2
+    key_3_n = key_3
     if (m == 2):
         for i in range(0, T-1):
             temp1 = numpy.roll(key_1, -3)
             temp2 = numpy.roll(temp1, -1)
-            temp3 = key_0 ^ temp1
+            temp3 = key_0_n ^ temp1
             temp4 = temp2 ^ temp3
             temp5 = temp4 ^ c ^ z_2[i]
-            key_0 = key_1
+            key_0_n = key_1
             key_1 = temp5
-#             print(key_0, key_1)
-        return key_0, key_1
+#             print(key_0_n, key_1)
+        return key_0_n, key_1
     elif (m == 3):
         temp1 = numpy.roll(key_2, -3)
         temp2 = numpy.roll(temp1, -1)
-        temp3 = key_0 ^ temp1
+        temp3 = key_0_n ^ temp1
         temp4 = temp2 ^ temp3
         if (n == 24):
             temp5 = temp4 ^ c ^ z_0[i]
@@ -142,29 +142,31 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
             temp5 = temp4 ^ c ^ z_2[i]
         elif (n == 32):
             temp5 = temp4 ^ c ^ z_3[i]
-        key_0 = key_1
+        key_0_n = key_1
         key_1 = key_2
         key_2 = temp5
-        print(key_0, key_1, key_2)
-        return key_0, key_1, key_2
+        print(key_0_n, key_1, key_2)
+        return key_0_n, key_1, key_2
     elif (m == 4):
-        print(key_0)
-        key_0_list.append(key_0)
-        for i in range(0, T):
-            print("key{} = {}".format(i, key_0))
+        print(key_0_n)
+        print ("key_0_n in hex",format(key_0_n, '04x'))
+        key_0_list.append(key_0_n)
+        for i in range(m, T):
+            print("key{} = {}".format(i, key_0_n))
+            print ("key_0_n in hex",format(key_0_n, '04x'))
             temp1 = (key_3 >> 3)|(key_3 << (n - 3)) & c
             temp2 = key_1 ^ temp1
             temp3 = (temp2 >> 1)|(temp2 << (n - 1)) & c
-            temp4 = key_0 ^ temp2
+            temp4 = key_0_n ^ temp2
             temp5 = temp3 ^ temp4
             if (n == 16):
-                temp6 = temp5 ^ c ^ z_0[i]
+                temp6 = temp5 ^ c ^ z_rev[i]
             elif (n == 32):
                 temp6 = temp5 ^ c ^ z_2[i]
             elif (n == 32):
                 temp6 = temp5 ^ c ^ z_3[i]
-            key_next = key_0
-            key_0 = key_1
+            key_next = key_0_n
+            key_0_n = key_1
             key_1 = key_2
             key_2 = key_3
             key_3 = temp6
@@ -181,7 +183,7 @@ def enc(plainText_1, plainText_2, key_0, T):
     t2 = plainText_2
     for i in range (T-1):
         tmp = t2
-        (n << d)|(n >> (INT_BITS - d))
+        #(n << d)|(n >> (INT_BITS - d))
         t2 = t1 ^ ((t2 >> 1) & (t2 >> 8)) ^ ((t2 >> 2)) ^ key_0[i]
         #print(key_0)
         t1 = tmp 
@@ -193,7 +195,7 @@ def enc(plainText_1, plainText_2, key_0, T):
 
 
 
-c=0
+
 
 print(c)
 # z_0
