@@ -12,15 +12,15 @@ bunlar orijinal makaledeki n=16, m=4 durumunda verilen başlangıç vektörleri
 sonuçların doğruluğunu makaleden inceleyebilirsiniz
 farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
 """
-plainText_1 = 0x6565 #most significant
-plainText_2 = 0x6877 #least significant
+plainText_1 = 0x6373656420737265 #most significant
+plainText_2 = 0x6c6c657661727420 #least significant
 print ("plaintexts in decimal",plainText_1, plainText_2)
 print ("plaintexts in hex",format(plainText_1, '04x'), format(plainText_2, "04X"))
 
 key_3 = 0x1918 #most significant
-key_2 = 0x1110
-key_1 = 0x0908
-key_0 = 0x0100 #least significant
+key_2 = 0x121110
+key_1 = 0x0f0e0d0c0b0a0908
+key_0 = 0x0706050403020100 #least significant
 print ("keys 0123 in decimal",key_0, key_1, key_2, key_3)
 print ("keys 0123 in hex",format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
 
@@ -32,13 +32,17 @@ z_3 = [1,1,0,1,1,0,1,1,1,0,1,0,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,0,0,0,0,0,0,1,0,0,1
 z_4 = [1,1,0,1,0,0,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,1,1,0,0,1,0,1,0,0,1,0,0,1,1,1,0,1,1,1,1]
 
 
+#n ve m değerleri oluşturuluyor
+n = 64
+m = 2
+
 """
 n ve m değerleri kullanıcıdan isteniyor
 bu değerlere göre T ve j oluşturuluyor
 """
-print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
-n = int(input("n değerini giriniz:"))
-m = int(input("m değerini giriniz:"))
+# print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
+# n = int(input("n değerini giriniz:"))
+# m = int(input("m değerini giriniz:"))
 c = 0
 c = 2**(n) - 1
 
@@ -111,7 +115,7 @@ numpy.set_printoptions(formatter={'int':hex})
 """
 z değerlerinin fonksiyonu henüz düzgün değildir.
 """
-print(type(z_0))
+# print(type(z_0))
 # z_rev=z_0
 # z_rev.reverse()
 # print(z_rev)
@@ -122,74 +126,63 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
     key_2_n = key_2
     key_3_n = key_3
     if (m == 2):
-        for i in range(0, T-1):
-            temp1 = numpy.roll(key_1, -3)
-            temp2 = numpy.roll(temp1, -1)
+        for i in range(T):
+            temp1 = (key_1 >> 3)|(key_1 << (n - 3)) & c
+            temp2 = (temp1 >> 1)|(temp1 << (n - 1)) & c
             temp3 = key_0_n ^ temp1
             temp4 = temp2 ^ temp3
-            temp5 = temp4 ^ c ^ z_2[i]
+            temp5 = temp4 ^ c ^ ((z_2[i % 62])) ^ 3
+            key_next = key_0_n
             key_0_n = key_1
             key_1 = temp5
-#             print(key_0_n, key_1)
+            key_0_list.append(key_next)
+            # print ("key{} = {}".format(i, key_next)
         return key_0_n, key_1
     elif (m == 3):
-        temp1 = numpy.roll(key_2, -3)
-        temp2 = numpy.roll(temp1, -1)
-        temp3 = key_0_n ^ temp1
-        temp4 = temp2 ^ temp3
-        if (n == 24):
-            temp5 = temp4 ^ c ^ z_0[i]
-        elif (n == 32):
-            temp5 = temp4 ^ c ^ z_2[i]
-        elif (n == 32):
-            temp5 = temp4 ^ c ^ z_3[i]
-        key_0_n = key_1
-        key_1 = key_2
-        key_2 = temp5
-        print(key_0_n, key_1, key_2)
-        return key_0_n, key_1, key_2
-    elif (m == 4):
-        print (key_0_n)
-        print ("key_0_n in hex",format(key_0_n, '016b'))
-        # key_0_list.append(key_0_n)
         for i in range(T):
-            print ("key{} = {}".format(i, key_0_n))
-            print ("key_0_n in hex",format(key_0_n, '016b'))
+            temp1 = (key_2 >> 3)|(key_2 << (n - 3)) & c
+            temp2 = (temp1 >> 1)|(temp1 << (n - 1)) & c
+            temp3 = key_0_n ^ temp1
+            temp4 = temp2 ^ temp3
+            if (n == 24):
+                temp5 = temp4 ^ c ^ ((z_0[i % 62])) ^ 3
+            elif (n == 32):
+                temp5 = temp4 ^ c ^ ((z_2[i % 62])) ^ 3
+            elif (n == 48 | n == 64):
+                temp5 = temp4 ^ c ^ ((z_3[i % 62])) ^ 3
+            key_next = key_0_n
+            key_0_n = key_1
+            key_1 = key_2
+            key_2 = temp5
+            key_0_list.append(key_next)
+            # print ("key{} = {}".format(i, key_next)
+        return key_0_list
+    elif (m == 4):
+        # print (key_0_n)
+        # print ("key_0_n in hex",format(key_0_n, '016b'))
+        for i in range(T):
+            # print ("key{} = {}".format(i, key_0_n))
+            # print ("key_0_n in hex",format(key_0_n, '016b'))
             temp1 = (key_3 >> 3)|(key_3 << (n - 3)) & c
             temp2 = key_1 ^ temp1
             temp3 = (temp2 >> 1)|(temp2 << (n - 1)) & c
-            # temp4 = key_0_n ^ temp2
-            # temp5 = temp3 ^ temp4
+            temp4 = key_0_n ^ temp2
+            temp5 = temp3 ^ temp4
             if (n == 16):
-                # temp6 = temp5 ^ c ^ z_rev[i]
-                # c_z = c ^ 3 ^ ((z_0[i] >> ((i+m) % 62)) & 1)
-                # c_z = c ^ 3
-                # c_z = z_0[i]
-                # c_z = (z_0[i] >> ((i) % 62)) 
-                # c_z = ((z_0[i] >> ((i) % 62)) & 1)
-                print(z_0[i % 62])
-                print(i)
-                print(z_0)
-                c_z = c ^ 3 ^ ((z_0[i % 62]))
-                # c_z = c ^ 3 ^ 1
-                print ("z{} = {}".format(i, z_0[i]))
-                # temp6 = temp2 ^ key_0_n ^ temp3 ^ c_z
-                # temp6 = c_z
-                # temp6 = temp3 ^ c_z
-                # temp6 = temp2 ^ temp3 ^ c_z
-                temp6 = temp2 ^ key_0_n ^ temp3 ^ c_z
+                temp6 = temp5 ^ c ^ ((z_0[i % 62])) ^ 3
+            elif (n == 24):
+                temp6 = temp5 ^ c ^ ((z_1[i % 62])) ^ 3
             elif (n == 32):
-                temp6 = temp5 ^ c ^ z_2[i]
-            elif (n == 32):
-                temp6 = temp5 ^ c ^ z_3[i]
+                temp6 = temp5 ^ c ^ ((z_3[i % 62])) ^ 3
+            elif (n == 64):
+                temp6 = temp5 ^ c ^ ((z_4[i % 62])) ^ 3
             key_next = key_0_n
             key_0_n = key_1
             key_1 = key_2
             key_2 = key_3
             key_3 = temp6
             key_0_list.append(key_next)
-        #key_0_list.append(key_0)
-
+            # print ("key{} = {}".format(i, key_next)
         return key_0_list
 
 key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
@@ -202,7 +195,7 @@ for k in key_0_list:
     #plaintext = t1[0:3]t2[0:3]
     t1 = plainText_1  
     t2 = plainText_2
-    print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
     # tmp = t2
     #(n << d)|(n >> (INT_BITS - d))
     # print(key_0_list[i])
@@ -221,22 +214,22 @@ for k in key_0_list:
     # t1 = tmp
     text1_list.append(t1)
     text2_list.append(t2) 
-    print(t1, t2)
-    print ("texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
-    print(text1_list)
-    print(text2_list)
+    # print(t1, t2)
+    
+    # print(text1_list)
+    # print(text2_list)
     # print("key {} = {}".format(key_0_list.index(),k))
     plainText_1 = t1
     plainText_2 = t2
 # print(t1,t2)
     # return text1_list, text2_list
+print ("cipertext hex",format(text1_list[-1], '04x'), format(text2_list[-1], "04X"))
 
 
 
 
 
-
-print(c)
+# print(c)
 # z_0
 # key_generation(key_0, key_1, key_2, key_3, m)
 # enc(plainText_1, plainText_2, key_0)
