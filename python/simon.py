@@ -7,23 +7,25 @@ Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
 """
 
 """
-plaintext ve key oluşturuldu
+plaintext, ciphertext ve key oluşturuldu
+encryption ve decryption işlemlerinin ikisi de gerçekleştiriliyor
 bunlar orijinal makaledeki n=16, m=4 durumunda verilen başlangıç vektörleri
 sonuçların doğruluğunu makaleden inceleyebilirsiniz
 farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
 """
 plainText_1 = 0x6373656420737265 #most significant
 plainText_2 = 0x6c6c657661727420 #least significant
-print ("plaintexts in hex",format(plainText_1, '04x'), format(plainText_2, "04X"))
+print (format(plainText_1, '016X'), format(plainText_2, "016X"), "plaintexts in start in hex")
 
 cipherText_2 = 0x49681b1e1e54fe3f
 cipherText_1 = 0x65aa832af84e0bbc
+print (format(cipherText_1, '016X'), format(cipherText_2, "016X"), "ciphertexts in start in hex")
 
 key_3 = 0x1918 #most significant
 key_2 = 0x121110
 key_1 = 0x0f0e0d0c0b0a0908
 key_0 = 0x0706050403020100 #least significant
-print ("keys 0123 in hex",format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
+print (format(key_3, '016x'), format(key_2, "016X"), format(key_1, "016X"), format(key_0, "016X"),"keys in hex")
 
 #z sabitleri oluşturuluyor
 z_0 = [1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0]
@@ -34,6 +36,7 @@ z_4 = [1,1,0,1,0,0,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,1,1
 
 
 #n ve m değerleri oluşturuluyor
+#bir alttaki bölümde el ile n ve m değeri girmeyi ayarlanabilir
 n = 64
 m = 2
 
@@ -44,7 +47,8 @@ bu değerlere göre T ve j oluşturuluyor
 # print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
 # n = int(input("n değerini giriniz:"))
 # m = int(input("m değerini giriniz:"))
-c = 0
+
+##sabit değer
 c = 2**(n) - 1
 
 
@@ -53,73 +57,37 @@ j = 0
 if (n == 16 and m == 4):
     T = 32
     j = 0
-    print("T,j:",T,j)
 elif (n == 24 and m == 3):
     T = 36
     j = 0
-    print("T,j:",T,j)
 elif (n == 24 and m == 4):
     T = 36
     j = 1
-    print("T,j:",T,j)
 elif (n == 32 and m == 3):
     T = 42
     j = 2
-    print("T,j:",T,j)
 elif (n == 32 and m == 4):
     T = 44
     j = 3
-    print("T,j:",T,j)
 elif (n == 48 and m == 2):
     T = 52
     j = 2
-    print("T,j:",T,j)
 elif (n == 48 and m == 3):
     T = 54
     j = 3
-    print("T,j:",T,j)
 elif (n == 64 and m == 2):
     T = 68
     j = 2
-    print("T,j:",T,j)
 elif (n == 24 and m == 3):
     T = 69
     j = 3
-    print("T,j:",T,j)
 elif (n == 64 and m == 4):
     T = 72
     j = 4
-    print("T,j:",T,j)
 else:
     print("yanlış değer girdiniz\ndevam etmeyiniz")
 
 
-
-
-
-
-
-import numpy
-numpy.set_printoptions(formatter={'int':hex})
-#key = [random.randint(1, 10) for i in range(m) for j in range(n)]
-#sağa çembersel kaydırma fonksiyonu
-#numpy.roll(key_0,1)
-
-#print(key)
-#for k in key:
-##    for j in key[k]:
-#        key[j] = hex(key[j])    
-#for j in range(m, T-1):
-#    tmp = numpy.roll(key[i][j], -3)
-#    print(tmp)
-
-"""
-z değerlerinin fonksiyonu henüz düzgün değildir.
-"""
-# print(type(z_0))
-# z_rev=z_0
-# z_rev.reverse()
-# print(z_rev)
 key_0_list= []
 def key_generation(key_0, key_1, key_2, key_3, m, T):
     key_0_n = key_0
@@ -191,16 +159,12 @@ key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
 ### encryption
 text1_list= []
 text2_list= []
-# def enc(plainText_1, plainText_2, key_0, T):
 for k in key_0_list:
-    #plaintext = t1[0:3]t2[0:3]
+    ### plaintext = t1[0:3]t2[0:3]
     t1 = plainText_1  
     t2 = plainText_2
     # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
-    # tmp = t2
-    #(n << d)|(n >> (INT_BITS - d))
     # print(key_0_list[i])
-    # t2 = t1 ^ (((t2 << 1) | (t2 >> (n - 1))) & ((t2 << 8) | (t2 >> (n - 8)))) ^ (((t2 << 2) | (t2 >> (n - 2)))) ^ key_0_list[i]
     crol_1 = (t1 << 1) + (t1 >> (n-1)) & c
     crol_2 = (t1 << 2) + (t1 >> (n-2)) & c
     crol_8 = (t1 << 8) + (t1 >> (n-8)) & c
@@ -210,21 +174,12 @@ for k in key_0_list:
     tmp4 = tmp3 ^ k
     t2 = t1
     t1 = tmp4
-
-    #print(key_0)
-    # t1 = tmp
     text1_list.append(t1)
     text2_list.append(t2) 
-    # print(t1, t2)
-    
-    # print(text1_list)
-    # print(text2_list)
-    # print("key {} = {}".format(key_0_list.index(),k))
     plainText_1 = t1
     plainText_2 = t2
-# print(t1,t2)
     # return text1_list, text2_list
-print ("ciphertext hex",format(text1_list[-1], '04x'), format(text2_list[-1], "04X"))
+print (format(text1_list[-1], '016X'), format(text2_list[-1], "016X"), "ciphertext hex",)
 
 
 
@@ -262,7 +217,7 @@ for k in reversed(key_0_list):
     cipherText_2 = ct2
 # print(t1,t2)
     # return text1_list, text2_list
-print ("plaintext hex",format(cp_text2_list[-1], '04X'), format(cp_text1_list[-1], "04X"))
+print (format(cp_text2_list[-1], '016X'), format(cp_text1_list[-1], "016X"), "plaintext hex")
 
 
 
