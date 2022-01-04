@@ -14,14 +14,15 @@ farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
 """
 plainText_1 = 0x6373656420737265 #most significant
 plainText_2 = 0x6c6c657661727420 #least significant
-print ("plaintexts in decimal",plainText_1, plainText_2)
 print ("plaintexts in hex",format(plainText_1, '04x'), format(plainText_2, "04X"))
+
+cipherText_2 = 0x49681b1e1e54fe3f
+cipherText_1 = 0x65aa832af84e0bbc
 
 key_3 = 0x1918 #most significant
 key_2 = 0x121110
 key_1 = 0x0f0e0d0c0b0a0908
 key_0 = 0x0706050403020100 #least significant
-print ("keys 0123 in decimal",key_0, key_1, key_2, key_3)
 print ("keys 0123 in hex",format(key_0, '04x'), format(key_1, "04X"), format(key_2, "04X"), format(key_3, "04X"))
 
 #z sabitleri oluşturuluyor
@@ -187,7 +188,7 @@ def key_generation(key_0, key_1, key_2, key_3, m, T):
 
 key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
 
-
+### encryption
 text1_list= []
 text2_list= []
 # def enc(plainText_1, plainText_2, key_0, T):
@@ -223,32 +224,48 @@ for k in key_0_list:
     plainText_2 = t2
 # print(t1,t2)
     # return text1_list, text2_list
-print ("cipertext hex",format(text1_list[-1], '04x'), format(text2_list[-1], "04X"))
+print ("ciphertext hex",format(text1_list[-1], '04x'), format(text2_list[-1], "04X"))
 
 
 
 
+### decryption
+cp_text1_list= []
+cp_text2_list= []
+# def enc(plainText_1, plainText_2, key_0, T):
+for k in reversed(key_0_list):
+    #plaintext = t1[0:3]t2[0:3]
+    ct1 = cipherText_1  
+    ct2 = cipherText_2
+    # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    # print(key_0_list[i])
+    crol_1 = (ct1 << 1) + (ct1 >> (n-1)) & c
+    crol_2 = (ct1 << 2) + (ct1 >> (n-2)) & c
+    crol_8 = (ct1 << 8) + (ct1 >> (n-8)) & c
+    tmp1 = crol_1 & crol_8
+    tmp2 = ct2 ^ tmp1
+    tmp3 = tmp2 ^ crol_2
+    tmp4 = tmp3 ^ k
+    ct2 = ct1
+    ct1 = tmp4
 
-# print(c)
-# z_0
+    #print(key_0)
+    # t1 = tmp
+    cp_text1_list.append(ct1)
+    cp_text2_list.append(ct2) 
+    # print(t1, t2)
+    
+    # print(text1_list)
+    # print(text2_list)
+    # print("key {} = {}".format(key_0_list.index(),k))
+    cipherText_1 = ct1
+    cipherText_2 = ct2
+# print(t1,t2)
+    # return text1_list, text2_list
+print ("plaintext hex",format(cp_text2_list[-1], '04X'), format(cp_text1_list[-1], "04X"))
+
+
+
 # key_generation(key_0, key_1, key_2, key_3, m)
 # enc(plainText_1, plainText_2, key_0)
-
-
-
-
-# for i in range(0, T-1):
 # a,b= enc(plainText_1, plainText_2, key_list, T)
-# print(type(key_0))
-# print(type(key_1))
-# print(type(key_2))
-# print(type(key_3))
-# print(type(m))
-# print(type(plainText_1))
-# print(type(plainText_2))
-# print (format(a, '04x'), format(b, "04X"))
-
-
-
-
-# print (format(plainText_1, '04x'), format(plainText_2, "04X"))
