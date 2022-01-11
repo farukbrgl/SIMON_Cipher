@@ -5,7 +5,7 @@
 SIMON Hafif Blok Şifreleyicisinin Python ile Gerçeklenmesi
 Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
 """
- 
+
 """
 plaintext, ciphertext ve key oluşturuldu
 encryption ve decryption işlemlerinin ikisi de gerçekleştiriliyor
@@ -13,7 +13,7 @@ bunlar orijinal makaledeki n=16, m=4 durumunda verilen başlangıç vektörleri
 sonuçların doğruluğunu makaleden inceleyebilirsiniz
 farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
 """
-def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x1110, key_1 = 0x0908, key_0 = 0x0100, n = 16, m = 4):
+def SIMON(plainText_1 = 0x74206e69206d6f6f, plainText_2 = 0x6d69732061207369, key_3 = 0x1f1e1d1c1b1a1918, key_2 = 0x1716151413121110, key_1 = 0x0f0e0d0c0b0a0908, key_0 = 0x0706050403020100, n = 64, m = 4):
     # plainText_1 = 0x6373656420737265 #most significant
     # plainText_2 = 0x6c6c657661727420 #least significant
     print (format(plainText_1, '0X'), format(plainText_2, "0X"), "plaintexts in start in hex")
@@ -181,6 +181,7 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
         plainText_2 = t2
         # return text1_list, text2_list
     print (format(text1_list[-1], '0X'), format(text2_list[-1], "0X"), "ciphertext hex",)
+    print ("********************************************************************")
 
 
 
@@ -220,11 +221,26 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
         # return text1_list, text2_list
     print (format(cp_text2_list[-1], '016X'), format(cp_text1_list[-1], "016X"), "plaintext hex")
     """
-
+    cipherText_1 = plainText_1
+    cipherText_2 = plainText_2
 
     # key_generation(key_0, key_1, key_2, key_3, m)
     # enc(plainText_1, plainText_2, key_0)
     # a,b= enc(plainText_1, plainText_2, key_list, T)
-    return plainText_1, plainText_2
+    return cipherText_1, cipherText_2
 
-SIMON()
+cipherText_1 = 0
+cipherText_2 = 0
+IV_1 = 0x74206e69206d6f6f
+IV_2 = 0x6d69732061207369
+# pt_1 = IV_1 ^ 0
+# pt_2 = IV_2 ^ 0
+# print(pt_1)
+# print(pt_2)
+f = open("random_numbers.txt", "a")
+a,b = SIMON(plainText_1 = IV_1, plainText_2 = IV_2)
+f.write(str(a)+str(b))
+# for i in range (10000):
+#     a,b = SIMON(plainText_1 = a, plainText_2 = b)
+# while 1 == 1:
+#     a,b = SIMON(plainText_1 = a, plainText_2 = b)
