@@ -5,7 +5,7 @@
 SIMON Hafif Blok Şifreleyicisinin Python ile Gerçeklenmesi
 Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
 """
-
+ 
 """
 plaintext, ciphertext ve key oluşturuldu
 encryption ve decryption işlemlerinin ikisi de gerçekleştiriliyor
@@ -162,7 +162,7 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
     text2_list= []
     for k in key_0_list:
         ### plaintext = t1[0:3]t2[0:3]
-        t1 = plainText_1  
+        t1 = plainText_1
         t2 = plainText_2
         # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
         # print(key_0_list[i])
@@ -176,7 +176,7 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
         t2 = t1
         t1 = tmp4
         text1_list.append(t1)
-        text2_list.append(t2) 
+        text2_list.append(t2)
         plainText_1 = t1
         plainText_2 = t2
         # return text1_list, text2_list
@@ -191,7 +191,7 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
     # def enc(plainText_1, plainText_2, key_0, T):
     for k in reversed(key_0_list):
         #plaintext = t1[0:3]t2[0:3]
-        ct1 = cipherText_1  
+        ct1 = cipherText_1
         ct2 = cipherText_2
         # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
         # print(key_0_list[i])
@@ -208,9 +208,9 @@ def SIMON(plainText_1 = 0x6565, plainText_2 = 0x6877, key_3 = 0x1918, key_2 = 0x
         #print(key_0)
         # t1 = tmp
         cp_text1_list.append(ct1)
-        cp_text2_list.append(ct2) 
+        cp_text2_list.append(ct2)
         # print(t1, t2)
-        
+
         # print(text1_list)
         # print(text2_list)
         # print("key {} = {}".format(key_0_list.index(),k))
