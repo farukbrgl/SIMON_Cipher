@@ -237,10 +237,22 @@ IV_2 = 0x6d69732061207369
 # pt_2 = IV_2 ^ 0
 # print(pt_1)
 # print(pt_2)
-f = open("random_numbers.txt", "a")
+f = open("random_numbers.txt", "w")
 a,b = SIMON(plainText_1 = IV_1, plainText_2 = IV_2)
-f.write(str(a)+str(b))
-# for i in range (10000):
-#     a,b = SIMON(plainText_1 = a, plainText_2 = b)
+x = bin(a).replace("0b","")
+y = bin(b).replace("0b","")
+f.write(str(a)+str(b)+"\n")
+# print(cipherText_1)
+for i in range (100):
+    a,b = SIMON(plainText_1 = a, plainText_2 = b)
+    # z = format(bin(a),"018b")
+    # z = format(z, "#018b")
+    # t = format(bin(b),"018b")
+    # t = format(t, "#018b")
+    # print(z)
+    # z = bin(a).replace("0b","")
+    # t = bin(b).replace("0b","")
+    f.write(str(a)+str(b)+"\n")
+f.close()
 # while 1 == 1:
 #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
