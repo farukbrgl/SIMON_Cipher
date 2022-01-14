@@ -246,7 +246,7 @@ for i in range (9):
     a,b = SIMON(plainText_1 = a, plainText_2 = b)
     z = format(a, '064b')
     t = format(b, '064b')
-    f.write(str(z)+str(t)+"\n")
+    f.write(str(a)+str(t)+"\n")
 f.close()
 # while 1 == 1:
 #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
