@@ -239,12 +239,14 @@ IV_2 = 0x6d69732061207369
 # print(pt_2)
 f = open("random_numbers.txt", "w")
 a,b = SIMON(plainText_1 = IV_1, plainText_2 = IV_2)
-x = bin(a).replace("0b","")
-y = bin(b).replace("0b","")
-f.write(str(a)+str(b)+"\n")
-for i in range (100):
+x = format(a, '064b')
+y = format(b, '064b')
+f.write(str(x)+str(y)+"\n")
+for i in range (9):
     a,b = SIMON(plainText_1 = a, plainText_2 = b)
-    f.write(str(a)+str(b)+"\n")
+    z = format(a, '064b')
+    t = format(b, '064b')
+    f.write(str(z)+str(t)+"\n")
 f.close()
 # while 1 == 1:
 #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
