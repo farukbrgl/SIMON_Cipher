@@ -249,11 +249,11 @@ a, b = SIMON(plainText_1=IV_1, plainText_2=IV_2)
 x = format(a, '064b')
 y = format(b, '064b')
 f.write(str(x) + str(y) + "\n")
-for i in range(100):
+for i in range(99999):
     a, b = SIMON(plainText_1=a, plainText_2=b)
     z = format(a, '064b')
     t = format(b, '064b')
-    f.write(str(a) + str(t) + "\n")
+    f.write(str(z) + str(t) + "\n")
 f.close()
 # while 1 == 1:
 #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
