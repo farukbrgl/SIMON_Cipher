@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# execution time : 8.114 s
 """
 SIMON Hafif Blok Şifreleyicisinin Python ile Gerçeklenmesi
 Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
@@ -244,7 +245,7 @@ IV_2 = 0x6d69732061207369
 # pt_2 = IV_2 ^ 0
 # print(pt_1)
 # print(pt_2)
-f = open("random_numbers.txt", "w")
+f = open("random_numbers_simon.txt", "w")
 a, b = SIMON(plainText_1=IV_1, plainText_2=IV_2)
 x = format(a, '064b')
 y = format(b, '064b')
