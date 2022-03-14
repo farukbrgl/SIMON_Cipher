@@ -8,7 +8,34 @@ Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
 import argparse
 
 
-class Simon:
+def key_generation(key, m_key_words, t_round):
+    key_0 = int(key[0:
+                n_word_size - 1], 16)
+    key_1 = int(key[n_word_size:
+                2 * n_word_size - 1], 16)
+    key_2 = int(key[2 * n_word_size:
+                3 * n_word_size - 1], 16)
+    key_3 = int(key[3 * n_word_size:
+                4 * n_word_size - 1], 16)
+    for i in range(t_round):
+        temp1 = (key_3 >> 3) | (
+            key_3 << (n_word_size - 3)) & c_const
+        temp2 = key_1 ^ temp1
+        temp3 = (temp2 >> 1) | (
+            temp2 << (n_word_size - 1)) & c_const
+        temp4 = key_0 ^ temp2
+        temp5 = temp3 ^ temp4
+        temp6 = temp5 ^ c_const ^ ((z_const[4][i % 62])) ^ 3
+        key_next = key_0
+        key_0 = key_1
+        key_1 = key_2
+        key_2 = key_3
+        key_3 = temp6
+        key_list.append(key_next)
+    return key_list
+
+
+def simon():
     z_const = [[1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0,
                 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1,
                 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0],
