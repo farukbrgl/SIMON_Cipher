@@ -245,7 +245,7 @@ IV_2 = 0x6d69732061207369
 # pt_2 = IV_2 ^ 0
 # print(pt_1)
 # print(pt_2)
-f = open("random_numbers_simon.txt", "w")
+f = open("random_numbers_simon_10k.txt", "w")
 a, b = SIMON(plainText_1=IV_1, plainText_2=IV_2)
 x = format(a, '064b')
 y = format(b, '064b')
@@ -256,5 +256,19 @@ for i in range(99999):
     t = format(b, '064b')
     f.write(str(z) + str(t) + "\n")
 f.close()
-# while 1 == 1:
-#     a,b = SIMON(plainText_1 = a, plainText_2 = b)
+# # while 1 == 1:
+# #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
+
+# cipherText_1 = 0
+# cipherText_2 = 0
+# f = open("random_numbers_simon_20k.txt", "w")
+# a, b = SIMON(plainText_1=IV_1, plainText_2=IV_2)
+# x = format(a, '064b')
+# y = format(b, '064b')
+# f.write(str(x) + str(y) + "\n")
+# for i in range(19999):
+#     a, b = SIMON(plainText_1=a, plainText_2=b)
+#     z = format(a, '064b')
+#     t = format(b, '064b')
+#     f.write(str(z) + str(t) + "\n")
+# f.close()
