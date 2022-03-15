@@ -144,6 +144,7 @@ def SIMON(plainText_1, plainText_2, key_3, key_2, key_1, key_0, n=64, m=4):
             return key_0_list
         f.close()
     key_list = key_generation(key_0, key_1, key_2, key_3, m, T)
+    f_detail = open("table_for_detail.txt", "w")
 
     # encryption
     text1_list = []
@@ -167,10 +168,20 @@ def SIMON(plainText_1, plainText_2, key_3, key_2, key_1, key_0, n=64, m=4):
         text2_list.append(t2)
         plainText_1 = t1
         plainText_2 = t2
+        #f = open("table_for_detail.txt", "w")
+        f_detail.write("SIMON Cipher 128-bit block, 256-bit key\n")
+        f_detail.write("plaintext:" + (format(IV_1, '016X'))
+                       + " " + format(IV_2, '016X') + "\n")
+        f_detail.write("key      :" + (format(t1, '016X')) + " " + format(t2,
+                                                                          '016X') + "\n")
+        f_detail.write("Round |  k_i+3  |  k_i+2  |  k_" + "\n")
+        f_detail.write(str(round_n) + "safad")
+
         # return text1_list, text2_list
     print(format(text1_list[-1], '0X'),
           format(text2_list[-1], "0X"), "ciphertext hex",)
     print("********************************************************************")
+    f_detail.close()
 
     cipherText_1 = plainText_1
     cipherText_2 = plainText_2
