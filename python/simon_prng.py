@@ -239,8 +239,8 @@ def SIMON(plainText_1=0x74206e69206d6f6f, plainText_2=0x6d69732061207369, key_3=
 
 cipherText_1 = 0
 cipherText_2 = 0
-IV_1 = 0x74206e69206d6f6f
-IV_2 = 0x6d69732061207369
+IV_1 = 0x477f00c83731ec7b
+IV_2 = 0x96b9fb0ffeb25ade
 # pt_1 = IV_1 ^ 0
 # pt_2 = IV_2 ^ 0
 # print(pt_1)
@@ -250,7 +250,7 @@ a, b = SIMON(plainText_1=IV_1, plainText_2=IV_2)
 x = format(a, '064b')
 y = format(b, '064b')
 f.write(str(x) + str(y) + "\n")
-for i in range(99999):
+for i in range(1):
     a, b = SIMON(plainText_1=a, plainText_2=b)
     z = format(a, '064b')
     t = format(b, '064b')

@@ -5,170 +5,222 @@
 SIMON Hafif Blok Şifreleyicisinin Python ile Gerçeklenmesi
 Orijinal makaleye https://eprint.iacr.org/2013/404 adresinden ulaşabilirsiniz.
 """
-import argparse
+
+"""
+plaintext, ciphertext ve key oluşturuldu
+encryption ve decryption işlemlerinin ikisi de gerçekleştiriliyor
+bunlar orijinal makaledeki n=16, m=4 durumunda verilen başlangıç vektörleri
+sonuçların doğruluğunu makaleden inceleyebilirsiniz
+farklı boyuttaki şifreleyici için farklı değerler vermelisiniz
+"""
+plainText_1 = 0x6373656420737265 #most significant
+plainText_2 = 0x6c6c657661727420 #least significant
+print (format(plainText_1, '016X'), format(plainText_2, "016X"), "plaintexts in start in hex")
+
+cipherText_2 = 0x49681b1e1e54fe3f
+cipherText_1 = 0x65aa832af84e0bbc
+print (format(cipherText_1, '016X'), format(cipherText_2, "016X"), "ciphertexts in start in hex")
+
+key_3 = 0x1918 #most significant
+key_2 = 0x121110
+key_1 = 0x0f0e0d0c0b0a0908
+key_0 = 0x0706050403020100 #least significant
+print (format(key_3, '016x'), format(key_2, "016X"), format(key_1, "016X"), format(key_0, "016X"),"keys in hex")
+
+#z sabitleri oluşturuluyor
+z_0 = [1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0]
+z_1 = [1,0,0,0,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,1,0,1,0,0,0,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,1,0]
+z_2 = [1,0,1,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,1,1,0,1,0,0,1,0,0,1,1,0,0,0,1,0,1,0,0,0,0,1,0,0,0,1,1,1,1,1,1,0,0,1,0,1,1,0,1,1,0,0,1,1]
+z_3 = [1,1,0,1,1,0,1,1,1,0,1,0,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,1,1,1,0,0,1,1,0,1,0,0,0,0,1,1,1,1]
+z_4 = [1,1,0,1,0,0,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,1,1,0,0,1,0,1,0,0,1,0,0,1,1,1,0,1,1,1,1]
 
 
-def key_generation(key, m_key_words, t_round):
-    key_0 = int(key[0:
-                n_word_size - 1], 16)
-    key_1 = int(key[n_word_size:
-                2 * n_word_size - 1], 16)
-    key_2 = int(key[2 * n_word_size:
-                3 * n_word_size - 1], 16)
-    key_3 = int(key[3 * n_word_size:
-                4 * n_word_size - 1], 16)
-    for i in range(t_round):
-        temp1 = (key_3 >> 3) | (
-            key_3 << (n_word_size - 3)) & c_const
-        temp2 = key_1 ^ temp1
-        temp3 = (temp2 >> 1) | (
-            temp2 << (n_word_size - 1)) & c_const
-        temp4 = key_0 ^ temp2
-        temp5 = temp3 ^ temp4
-        temp6 = temp5 ^ c_const ^ ((z_const[4][i % 62])) ^ 3
-        key_next = key_0
-        key_0 = key_1
-        key_1 = key_2
-        key_2 = key_3
-        key_3 = temp6
-        key_list.append(key_next)
-    return key_list
+#n ve m değerleri oluşturuluyor
+#bir alttaki bölümde el ile n ve m değeri girmeyi ayarlanabilir
+n = 64
+m = 2
+
+"""
+n ve m değerleri kullanıcıdan isteniyor
+bu değerlere göre T ve j oluşturuluyor
+"""
+# print("n=16, 24, 32, 48, 64 olabilir\n m 2, 3, 4 olabilir")
+# n = int(input("n değerini giriniz:"))
+# m = int(input("m değerini giriniz:"))
+
+##sabit değer
+c = 2**(n) - 1
 
 
-def simon():
-    z_const = [[1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0,
-                0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1,
-                0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0],
-               [1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0,
-                0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1,
-                1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0],
-               [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0,
-                1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0,
-                0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1],
-               [1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0,
-                1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,
-                1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
-               [1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0,
-                1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
-                1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1]]
+T = 0
+j = 0
+if (n == 16 and m == 4):
+    T = 32
+    j = 0
+elif (n == 24 and m == 3):
+    T = 36
+    j = 0
+elif (n == 24 and m == 4):
+    T = 36
+    j = 1
+elif (n == 32 and m == 3):
+    T = 42
+    j = 2
+elif (n == 32 and m == 4):
+    T = 44
+    j = 3
+elif (n == 48 and m == 2):
+    T = 52
+    j = 2
+elif (n == 48 and m == 3):
+    T = 54
+    j = 3
+elif (n == 64 and m == 2):
+    T = 68
+    j = 2
+elif (n == 24 and m == 3):
+    T = 69
+    j = 3
+elif (n == 64 and m == 4):
+    T = 72
+    j = 4
+else:
+    print("yanlış değer girdiniz\ndevam etmeyiniz")
 
-    def __init__(self, plaintext, key):
-        self.plaintext = plaintext
-        self.key = key
-        self.key_list = []
-        # these constant can be changed at different versions of Simon
-        self.n_word_size = 64
-        self.m_key_words = 4
-        self.c_const = 2**self.n_word_size - 1
-        self.t_round = 72
-        self.j_number = 4
 
-    def key_generation(self, key, m_key_words, t_round):
-        key_0 = int(self.key[0:
-                    self.n_word_size - 1], 16)
-        key_1 = int(self.key[self.n_word_size:
-                    2 * self.n_word_size - 1], 16)
-        key_2 = int(self.key[2 * self.n_word_size:
-                    3 * self.n_word_size - 1], 16)
-        key_3 = int(self.key[3 * self.n_word_size:
-                    4 * self.n_word_size - 1], 16)
-        for i in range(self.t_round):
-            temp1 = (key_3 >> 3) | (
-                key_3 << (self.n_word_size - 3)) & self.c_const
+key_0_list= []
+def key_generation(key_0, key_1, key_2, key_3, m, T):
+    key_0_n = key_0
+    key_1_n = key_1
+    key_2_n = key_2
+    key_3_n = key_3
+    if (m == 2):
+        for i in range(T):
+            temp1 = (key_1 >> 3)|(key_1 << (n - 3)) & c
+            temp2 = (temp1 >> 1)|(temp1 << (n - 1)) & c
+            temp3 = key_0_n ^ temp1
+            temp4 = temp2 ^ temp3
+            temp5 = temp4 ^ c ^ ((z_2[i % 62])) ^ 3
+            key_next = key_0_n
+            key_0_n = key_1
+            key_1 = temp5
+            key_0_list.append(key_next)
+            # print ("key{} = {}".format(i, key_next)
+        return key_0_n, key_1
+    elif (m == 3):
+        for i in range(T):
+            temp1 = (key_2 >> 3)|(key_2 << (n - 3)) & c
+            temp2 = (temp1 >> 1)|(temp1 << (n - 1)) & c
+            temp3 = key_0_n ^ temp1
+            temp4 = temp2 ^ temp3
+            if (n == 24):
+                temp5 = temp4 ^ c ^ ((z_0[i % 62])) ^ 3
+            elif (n == 32):
+                temp5 = temp4 ^ c ^ ((z_2[i % 62])) ^ 3
+            elif (n == 48 | n == 64):
+                temp5 = temp4 ^ c ^ ((z_3[i % 62])) ^ 3
+            key_next = key_0_n
+            key_0_n = key_1
+            key_1 = key_2
+            key_2 = temp5
+            key_0_list.append(key_next)
+            # print ("key{} = {}".format(i, key_next)
+        return key_0_list
+    elif (m == 4):
+        # print (key_0_n)
+        # print ("key_0_n in hex",format(key_0_n, '016b'))
+        for i in range(T):
+            # print ("key{} = {}".format(i, key_0_n))
+            # print ("key_0_n in hex",format(key_0_n, '016b'))
+            temp1 = (key_3 >> 3)|(key_3 << (n - 3)) & c
             temp2 = key_1 ^ temp1
-            temp3 = (temp2 >> 1) | (
-                temp2 << (self.n_word_size - 1)) & self.c_const
-            temp4 = key_0 ^ temp2
+            temp3 = (temp2 >> 1)|(temp2 << (n - 1)) & c
+            temp4 = key_0_n ^ temp2
             temp5 = temp3 ^ temp4
-            temp6 = temp5 ^ self.c_const ^ ((self.z_const[4][i % 62])) ^ 3
-            key_next = key_0
-            key_0 = key_1
+            if (n == 16):
+                temp6 = temp5 ^ c ^ ((z_0[i % 62])) ^ 3
+            elif (n == 24):
+                temp6 = temp5 ^ c ^ ((z_1[i % 62])) ^ 3
+            elif (n == 32):
+                temp6 = temp5 ^ c ^ ((z_3[i % 62])) ^ 3
+            elif (n == 64):
+                temp6 = temp5 ^ c ^ ((z_4[i % 62])) ^ 3
+            key_next = key_0_n
+            key_0_n = key_1
             key_1 = key_2
             key_2 = key_3
             key_3 = temp6
-            self.key_list.append(key_next)
-        return self.key_list
+            key_0_list.append(key_next)
+            # print ("key{} = {}".format(i, key_next)
+        return key_0_list
 
-    def encryption(self, plaintext):
-        for k in self.key_list:
-            t1 = int(self.plaintext[0: self.n_word_size - 1], 16)
-            t2 = int(
-                self.plaintext[self.n_word_size: 2 * self.n_word_size - 1], 26)
-            crol_1 = (t1 << 1) + (t1 >> (self.n_word_size - 1)) & self.c_const
-            crol_2 = (t1 << 2) + (t1 >> (self.n_word_size - 2)) & self.c_const
-            crol_8 = (t1 << 8) + (t1 >> (self.n_word_size - 8)) & self.c_const
-            tmp1 = crol_1 & crol_8
-            tmp2 = t2 ^ tmp1
-            tmp3 = tmp2 ^ crol_2
-            tmp4 = tmp3 ^ k
-            t2 = t1
-            t1 = tmp4
-            cipherText_1 = t1
-            cipherText_2 = t2
-        return cipherText_1, cipherText_2
+key_list =key_generation(key_0, key_1, key_2, key_3, m, T)
 
-    def table_generator(self):
-        print("Table of Every Steps for One Round")
-        print("**********************************")
-        print("Inputs")
-        print("plainText_1   ")
-        plaintext = str(self.plaintext)
-        print(plaintext)
-
-    def __repr__(self):
-        # return "I am an instance of MyClass at address "+hex(id(self))
-        return self.cipherText_1, self.cipherText_2
+### encryption
+text1_list= []
+text2_list= []
+for k in key_0_list:
+    ### plaintext = t1[0:3]t2[0:3]
+    t1 = plainText_1  
+    t2 = plainText_2
+    # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    # print(key_0_list[i])
+    crol_1 = (t1 << 1) + (t1 >> (n-1)) & c
+    crol_2 = (t1 << 2) + (t1 >> (n-2)) & c
+    crol_8 = (t1 << 8) + (t1 >> (n-8)) & c
+    tmp1 = crol_1 & crol_8
+    tmp2 = t2 ^ tmp1
+    tmp3 = tmp2 ^ crol_2
+    tmp4 = tmp3 ^ k
+    t2 = t1
+    t1 = tmp4
+    text1_list.append(t1)
+    text2_list.append(t2) 
+    plainText_1 = t1
+    plainText_2 = t2
+    # return text1_list, text2_list
+print (format(text1_list[-1], '016X'), format(text2_list[-1], "016X"), "ciphertext hex",)
 
 
-def main(name, iteration, random):
-    random_iv = open("random_iv_" + str(random), "r")
-    # print(random_iv.readlines())
-    # with open("./results/random_iv") as file_in:
-    #     lines = []
-    # for line in file_in:
-    #     lines.append(line)
-    # print(type(int(lines[1])))
-    random_list = random_iv.readlines()
-    plaintext = random_list[0][0:32]
-    key = random_list[1][0:64]
-    # print((pt_1))
-    # hex_pt_1 = hex(pt_1)
-    # hex_pt_2 = hex(pt_2)
-    # hex_k_3 = hex(k_3)
-    # hex_k_2 = hex(k_2)
-    # hex_k_1 = hex(k_1)
-    # hex_k_0 = hex(k_0)
-
-    # plainText_1_n = int(hex_pt_1, 16)
-    # plainText_2_n = int(hex_pt_2, 16)
-
-    # pt_1 = IV_1 ^ 0
-    # pt_2 = IV_2 ^ 0
-    # print(pt_1)
-    # print(pt_2)
-    f = open(name, "w")
-    a, b = Simon(plaintext=plaintext, key=key)
-    x = format(a, '064b')
-    y = format(b, '064b')
-    f.write(str(x) + str(y) + "\n")
-    for i in range(iteration - 1):
-        a, b = Simon.SIMON(plaintext=a, key=b)
-        z = format(a, '064b')
-        t = format(b, '064b')
-        f.write(str(z) + str(t) + "\n")
-    f.close()
 
 
-if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--iter", required=True, help="num of iterations")
-    ap.add_argument("-r", "--rand", required=True, help="num of random iv")
-    ap.add_argument("-l", "--name", required=True, help="file address")
-    # ap.add_argument("-pt1","--plainText_1",required = True, help = "plaintext 1")
-    # ap.add_argument("-pt2","--plainText_2",required = True, help = "plaintext 2")
-    # ap.add_argument("-k3","--key_3",required = True, help = "key 3")
-    # ap.add_argument("-k2","--key_2",required = True, help = "key 2")
-    # ap.add_argument("-k1","--key_1",required = True, help = "key 1")
-    # ap.add_argument("-k0","--key_0",required = True, help = "key 0")
-    args = vars(ap.parse_args())
-    main(args["name"], int(args["iter"]), int(args["rand"]))
+### decryption
+cp_text1_list= []
+cp_text2_list= []
+# def enc(plainText_1, plainText_2, key_0, T):
+for k in reversed(key_0_list):
+    #plaintext = t1[0:3]t2[0:3]
+    ct1 = cipherText_1  
+    ct2 = cipherText_2
+    # print ("before texts 01 in hex",format(t1, '04x'), format(t2, "04X"))
+    # print(key_0_list[i])
+    crol_1 = (ct1 << 1) + (ct1 >> (n-1)) & c
+    crol_2 = (ct1 << 2) + (ct1 >> (n-2)) & c
+    crol_8 = (ct1 << 8) + (ct1 >> (n-8)) & c
+    tmp1 = crol_1 & crol_8
+    tmp2 = ct2 ^ tmp1
+    tmp3 = tmp2 ^ crol_2
+    tmp4 = tmp3 ^ k
+    ct2 = ct1
+    ct1 = tmp4
+
+    #print(key_0)
+    # t1 = tmp
+    cp_text1_list.append(ct1)
+    cp_text2_list.append(ct2) 
+    # print(t1, t2)
+    
+    # print(text1_list)
+    # print(text2_list)
+    # print("key {} = {}".format(key_0_list.index(),k))
+    cipherText_1 = ct1
+    cipherText_2 = ct2
+# print(t1,t2)
+    # return text1_list, text2_list
+print (format(cp_text2_list[-1], '016X'), format(cp_text1_list[-1], "016X"), "plaintext hex")
+
+
+
+# key_generation(key_0, key_1, key_2, key_3, m)
+# enc(plainText_1, plainText_2, key_0)
+# a,b= enc(plainText_1, plainText_2, key_list, T)
