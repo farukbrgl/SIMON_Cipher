@@ -145,10 +145,12 @@ def SIMON(plainText_1, plainText_2, key_3, key_2, key_1, key_0, n=64, m=4):
         f.close()
     key_list = key_generation(key_0, key_1, key_2, key_3, m, T)
     f_detail = open("table_for_detail.txt", "w")
-
+    f_detail.write("round | plaintext1 | plaintext2 | round key\n")
+    #f_detail.write((format(IV_1, '016X')) + " " + format(IV_2, '016X') + "\n")
     # encryption
     text1_list = []
     text2_list = []
+    a = 1
     for k in key_0_list:
         # plaintext = t1[0:3]t2[0:3]
         t1 = plainText_1
@@ -169,14 +171,10 @@ def SIMON(plainText_1, plainText_2, key_3, key_2, key_1, key_0, n=64, m=4):
         plainText_1 = t1
         plainText_2 = t2
         #f = open("table_for_detail.txt", "w")
-        f_detail.write("SIMON Cipher 128-bit block, 256-bit key\n")
-        f_detail.write("plaintext:" + (format(IV_1, '016X'))
-                       + " " + format(IV_2, '016X') + "\n")
-        f_detail.write("key      :" + (format(t1, '016X')) + " " + format(t2,
-                                                                          '016X') + "\n")
-        f_detail.write("Round |  k_i+3  |  k_i+2  |  k_" + "\n")
-        f_detail.write(str(round_n) + "safad")
 
+        f_detail.write(str(a) + "|" + (format(plainText_1, '016X')) + "|"
+                       + format(plainText_2, '016X') + "|" + format(k, "016X") + "\n")
+        a = a + 1
         # return text1_list, text2_list
     print(format(text1_list[-1], '0X'),
           format(text2_list[-1], "0X"), "ciphertext hex",)
@@ -220,14 +218,14 @@ f.write(str(x) + str(y) + "\n")
 #     f.write(str(z) + str(t) + "\n")
 f.close()
 
-f = open("table_for_detail.txt", "w")
-f.write("SIMON Cipher 128-bit block, 256-bit key\n")
-f.write("plaintext:" + (format(IV_1, '0X')) + " " + format(IV_2, '0X') + "\n")
-f.write("key      :" + (format(key_3, '0X')) + " " + format(key_2,
-        '0X') + " " + format(key_1, '0X') + " " + format(key_0, '0X') + "\n")
-f.write("Round |  k_i+3  |  k_i+2  |  k_" + "\n")
+#f = open("table_for_detail.txt", "w")
+#f.write("SIMON Cipher 128-bit block, 256-bit key\n")
+#f.write("plaintext:" + (format(IV_1, '0X')) + " " + format(IV_2, '0X') + "\n")
+# f.write("key      :" + (format(key_3, '0X')) + " " + format(key_2,
+#        '0X') + " " + format(key_1, '0X') + " " + format(key_0, '0X') + "\n")
+#f.write("Round |  k_i+3  |  k_i+2  |  k_" + "\n")
 # f.write(str(round_n) + "safad")
-f.close()
+# f.close()
 
 # # while 1 == 1:
 # #     a,b = SIMON(plainText_1 = a, plainText_2 = b)
